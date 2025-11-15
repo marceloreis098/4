@@ -180,58 +180,38 @@ Para atualizar a aplicação com novas modificações do repositório:
 
 ---
 
-## Passo 7: Configurando HTTPS com Nginx e Let's Encrypt (Recomendado para Produção)
+## Passo 7 (Alternativa): Configurando HTTPS com Nginx e acme.sh
 
-Para garantir a segurança da aplicação, é essencial servi-la via HTTPS. Este guia utiliza o Nginx como um proxy reverso e o Certbot para obter um certificado SSL gratuito da Let's Encrypt.
+Esta é uma alternativa robusta ao Certbot. O `acme.sh` é um script leve que não precisa de muitas dependências.
 
 ### Pré-requisitos
--   Um nome de domínio (ex: `inventariopro.usereserva.com`) com um registro DNS do tipo `A` apontando para o endereço IP público do seu servidor.
--   Acesso `sudo` ao seu servidor Ubuntu.
--   A aplicação (frontend e backend) deve estar rodando via `pm2` conforme os passos anteriores.
+-   Um nome de domínio (ex: `inventariopro.usereserva.com`) com um registro DNS tipo `A` apontando para o IP público do seu servidor.
+-   Acesso `sudo` e as portas 80 e 443 abertas no firewall.
 
-### 1. Instalação do Nginx
+### 1. Instalação do Nginx e Ajuste do Firewall
 ```bash
 sudo apt update
 sudo apt install nginx
-```
-
-### 2. Ajuste do Firewall
-Permita o tráfego HTTP e HTTPS através do Nginx e remova o acesso direto à porta 3000 do frontend, se você a habilitou anteriormente.
-```bash
 sudo ufw allow 'Nginx Full'
-sudo ufw delete allow 3000/tcp
+sudo ufw delete allow 3000/tcp # Se você habilitou anteriormente
 sudo ufw status
 ```
-A saída deve mostrar `Nginx Full` na lista de regras permitidas.
 
-### 3. Configuração do Nginx como Proxy Reverso
-Crie um arquivo de configuração para o seu site. Substitua `inventariopro.usereserva.com` pelo seu domínio real.
+### 2. Preparação da Configuração do Nginx
+Primeiro, vamos criar uma configuração simples para o Nginx servir o seu site via HTTP (porta 80). Isso é necessário para o `acme.sh` validar seu domínio.
+
 ```bash
 sudo nano /etc/nginx/sites-available/inventario
 ```
 
-Cole a seguinte configuração no arquivo. **Lembre-se de substituir `inventariopro.usereserva.com` pelo seu domínio.**
+Cole esta configuração inicial. **Lembre-se de substituir `inventariopro.usereserva.com` pelo seu domínio.**
 ```nginx
 server {
     listen 80;
     server_name inventariopro.usereserva.com;
 
-    # Redireciona para HTTPS (será configurado pelo Certbot)
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-
-server {
-    listen 443 ssl http2; # Será configurado pelo Certbot
-    server_name inventariopro.usereserva.com;
-
-    # Configurações SSL (serão adicionadas pelo Certbot)
-    # ssl_certificate /etc/letsencrypt/live/inventariopro.usereserva.com/fullchain.pem;
-    # ssl_certificate_key /etc/letsencrypt/live/inventariopro.usereserva.com/privkey.pem;
-
-    # Aumenta o limite de tamanho para uploads de arquivos (ex: fotos de equipamentos)
-    client_max_body_size 10M;
+    # O diretório root é necessário para o acme.sh realizar a validação
+    root /var/www/Inventario/dist;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -247,41 +227,92 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # Suporte a WebSocket (se necessário no futuro)
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
     }
 }
 ```
-**Explicação:**
--   **Bloco `listen 80`:** Captura todo o tráfego HTTP e o redireciona para HTTPS.
--   **Bloco `listen 443 ssl`:** Lida com o tráfego HTTPS.
--   **`location /`:** Redireciona todas as requisições da raiz do site para o frontend React rodando na porta 3000.
--   **`location /api/`:** Redireciona as requisições que começam com `/api/` para o backend Node.js na porta 3001.
 
-### 4. Habilitando a Configuração
-Crie um link simbólico para ativar o site, teste a configuração e reinicie o Nginx.
+Ative o site e reinicie o Nginx:
 ```bash
 sudo ln -s /etc/nginx/sites-available/inventario /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
+Neste ponto, você deve conseguir acessar `http://inventariopro.usereserva.com`.
 
-### 5. Instalando o Certificado SSL com Certbot
-O Certbot automatiza a obtenção e renovação de certificados SSL.
+### 3. Instalação do acme.sh
+Execute o comando a seguir como seu usuário normal (não como `root`). Substitua pelo seu e-mail.
+```bash
+curl https://get.acme.sh | sh -s email=seu-email@example.com
+```
+Após a instalação, feche e reabra seu terminal SSH para que o alias `acme.sh` funcione, ou execute `source ~/.bashrc`.
 
-1.  **Instale o Certbot:**
-    ```bash
-    sudo apt install certbot python3-certbot-nginx
-    ```
-2.  **Obtenha o Certificado:**
-    Execute o comando abaixo, substituindo pelo seu domínio. O Certbot irá detectar sua configuração do Nginx, obter o certificado e modificar o arquivo de configuração para usar HTTPS.
-    ```bash
-    sudo certbot --nginx -d inventariopro.usereserva.com
-    ```
-    -   Siga as instruções na tela.
-    -   Quando perguntado sobre redirecionar o tráfego HTTP para HTTPS, escolha a opção **2 (Redirect)**.
+### 4. Geração do Certificado SSL
+Use o `acme.sh` para gerar o certificado. O modo `nginx` irá automaticamente criar um arquivo de validação temporário.
+```bash
+acme.sh --issue -d inventariopro.usereserva.com --nginx
+```
 
-Após a conclusão, o Certbot configurará a renovação automática. Seu site estará acessível via `https://inventariopro.usereserva.com`.
+### 5. Instalação do Certificado no Nginx
+Este comando copia os arquivos do certificado para um local permanente e configura a renovação automática para recarregar o Nginx.
+```bash
+sudo mkdir -p /etc/nginx/ssl
+acme.sh --install-cert -d inventariopro.usereserva.com \
+--key-file       /etc/nginx/ssl/inventariopro.usereserva.com.key  \
+--fullchain-file /etc/nginx/ssl/inventariopro.usereserva.com.cer \
+--reloadcmd     "sudo systemctl reload nginx"
+```
+
+### 6. Atualização Final da Configuração do Nginx
+Agora, edite novamente o arquivo de configuração do Nginx para adicionar o bloco HTTPS.
+```bash
+sudo nano /etc/nginx/sites-available/inventario
+```
+
+Substitua **todo o conteúdo** pelo seguinte. Isso redirecionará HTTP para HTTPS e ativará o SSL.
+```nginx
+# Redireciona HTTP para HTTPS
+server {
+    listen 80;
+    server_name inventariopro.usereserva.com;
+    return 301 https://$host$request_uri;
+}
+
+# Configuração do servidor HTTPS
+server {
+    listen 443 ssl http2;
+    server_name inventariopro.usereserva.com;
+
+    # Caminhos para os certificados gerados pelo acme.sh
+    ssl_certificate /etc/nginx/ssl/inventariopro.usereserva.com.cer;
+    ssl_certificate_key /etc/nginx/ssl/inventariopro.usereserva.com.key;
+
+    # Aumenta o limite de tamanho para uploads
+    client_max_body_size 10M;
+
+    # Proxy para o Frontend React
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Proxy para o Backend Node.js
+    location /api/ {
+        proxy_pass http://localhost:3001/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+### 7. Finalização
+Teste a configuração e reinicie o Nginx pela última vez.
+```bash
+sudo nginx -t
+sudo systemctl restart nginx
+```
+Pronto! Sua aplicação agora deve estar segura e acessível via `https://inventariopro.usereserva.com`. O `acme.sh` cuidará da renovação automaticamente.

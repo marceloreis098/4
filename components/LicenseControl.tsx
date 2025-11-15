@@ -544,7 +544,6 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
         return expDate < today;
     }
 
-    // FIX: The helper functions expect a Date object. Pass the parsed `date` object to ensure correct date comparisons instead of the raw string.
     const ExpirationStatus: React.FC<{dateStr?: string}> = ({dateStr}) => {
         if (!dateStr || dateStr.toUpperCase() === 'N/A') return <span>Perpétua</span>;
         
