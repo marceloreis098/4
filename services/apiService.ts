@@ -16,8 +16,8 @@ const getApiBaseUrl = () => {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:3001/api';
     }
-    // Para produção, constrói a URL usando o mesmo hostname mas na porta 3001
-    return `${window.location.protocol}//${window.location.hostname}:3001/api`;
+    // Para produção, usa um caminho relativo para que o proxy reverso (Nginx) possa lidar com o roteamento.
+    return '/api';
 };
 
 
@@ -39,7 +39,7 @@ export const checkApiStatus = async (): Promise<{ ok: boolean, message?: string 
         await response.json();
         return { ok: true };
     } catch (error: any) {
-        return { ok: false, message: 'Falha ao conectar com a API. Verifique se o servidor backend está em execução na porta 3001 e se não há firewalls bloqueando a conexão.' };
+        return { ok: false, message: 'Falha ao conectar com a API. Verifique se o servidor backend está em execução e se o proxy reverso (Nginx) está configurado corretamente para o caminho /api.' };
     }
 };
 

@@ -115,7 +115,7 @@ export interface AppSettings {
     lastAbsoluteUpdateTimestamp?: string;
 }
 
-// FIX: Add ChatMessage interface to resolve import error.
+// FIX: Add ChatMessage interface for the AI Assistant component
 export interface ChatMessage {
     role: 'user' | 'model';
     parts: { text: string }[];
