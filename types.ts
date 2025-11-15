@@ -114,3 +114,8 @@ export interface AppSettings {
     hasInitialConsolidationRun?: boolean;
     lastAbsoluteUpdateTimestamp?: string;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  parts: { text: string }[];
+}

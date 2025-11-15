@@ -247,7 +247,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                 alert(`Falha ao zerar o banco: ${result.message}`);
             }
         } catch (error: any) {
-            // FIX: Corrected variable name from `err` to `error` to match the catch block parameter.
+            // FIX: Corrected error handling for an 'unknown' type in the catch block by explicitly typing the error object.
             alert(`Erro ao zerar o banco: ${error.message}`);
         } finally {
             setIsDatabaseActionLoading(false);

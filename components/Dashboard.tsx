@@ -155,7 +155,7 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
         groupData[model] = 0;
       });
 
-      equipment.forEach(e => {
+      equipment.forEach((e: Equipment) => {
         if ((e.grupoPoliticas || 'Não especificado') === group) {
           const modelName = e.model || 'Não especificado';
           if (typeof groupData[modelName] === 'number') {
