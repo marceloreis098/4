@@ -139,16 +139,17 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
   const statusData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
   
   // FIX: Using Array.from() ensures correct type inference from the Set, preventing variables from being typed as 'unknown'.
+  // FIX: Explicitly typing array and map/forEach variables to prevent incorrect 'unknown' type inference.
   const { policyGroupModelData, allModels } = useMemo(() => {
     if (!equipment.length) return { policyGroupModelData: [], allModels: [] };
 
-    const allPolicyGroups = Array.from(new Set(equipment.map(e => e.grupoPoliticas || 'Não especificado'))).sort();
-    const allModels = Array.from(new Set(equipment.map(e => e.model || 'Não especificado'))).sort();
+    const allPolicyGroups: string[] = Array.from(new Set(equipment.map(e => e.grupoPoliticas || 'Não especificado'))).sort();
+    const allModels: string[] = Array.from(new Set(equipment.map(e => e.model || 'Não especificado'))).sort();
 
-    const data = allPolicyGroups.map(group => {
+    const data = allPolicyGroups.map((group: string) => {
       const groupData: { name: string; [key: string]: number | string } = { name: group };
       
-      allModels.forEach(model => {
+      allModels.forEach((model: string) => {
         groupData[model] = 0;
       });
 

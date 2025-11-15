@@ -185,7 +185,7 @@ Para atualizar a aplicação com novas modificações do repositório:
 Para garantir a segurança da aplicação, é essencial servi-la via HTTPS. Este guia utiliza o Nginx como um proxy reverso e o Certbot para obter um certificado SSL gratuito da Let's Encrypt.
 
 ### Pré-requisitos
--   Um nome de domínio (ex: `inventario.suaempresa.com`) com um registro DNS do tipo `A` apontando para o endereço IP público do seu servidor.
+-   Um nome de domínio (ex: `inventariopro.usereserva.com`) com um registro DNS do tipo `A` apontando para o endereço IP público do seu servidor.
 -   Acesso `sudo` ao seu servidor Ubuntu.
 -   A aplicação (frontend e backend) deve estar rodando via `pm2` conforme os passos anteriores.
 
@@ -205,16 +205,16 @@ sudo ufw status
 A saída deve mostrar `Nginx Full` na lista de regras permitidas.
 
 ### 3. Configuração do Nginx como Proxy Reverso
-Crie um arquivo de configuração para o seu site. Substitua `inventario.suaempresa.com` pelo seu domínio real.
+Crie um arquivo de configuração para o seu site. Substitua `inventariopro.usereserva.com` pelo seu domínio real.
 ```bash
 sudo nano /etc/nginx/sites-available/inventario
 ```
 
-Cole a seguinte configuração no arquivo. **Lembre-se de substituir `inventario.suaempresa.com` pelo seu domínio.**
+Cole a seguinte configuração no arquivo. **Lembre-se de substituir `inventariopro.usereserva.com` pelo seu domínio.**
 ```nginx
 server {
     listen 80;
-    server_name inventario.suaempresa.com;
+    server_name inventariopro.usereserva.com;
 
     # Redireciona para HTTPS (será configurado pelo Certbot)
     location / {
@@ -224,11 +224,11 @@ server {
 
 server {
     listen 443 ssl http2; # Será configurado pelo Certbot
-    server_name inventario.suaempresa.com;
+    server_name inventariopro.usereserva.com;
 
     # Configurações SSL (serão adicionadas pelo Certbot)
-    # ssl_certificate /etc/letsencrypt/live/inventario.suaempresa.com/fullchain.pem;
-    # ssl_certificate_key /etc/letsencrypt/live/inventario.suaempresa.com/privkey.pem;
+    # ssl_certificate /etc/letsencrypt/live/inventariopro.usereserva.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/inventariopro.usereserva.com/privkey.pem;
 
     # Aumenta o limite de tamanho para uploads de arquivos (ex: fotos de equipamentos)
     client_max_body_size 10M;
@@ -279,9 +279,9 @@ O Certbot automatiza a obtenção e renovação de certificados SSL.
 2.  **Obtenha o Certificado:**
     Execute o comando abaixo, substituindo pelo seu domínio. O Certbot irá detectar sua configuração do Nginx, obter o certificado e modificar o arquivo de configuração para usar HTTPS.
     ```bash
-    sudo certbot --nginx -d inventario.suaempresa.com
+    sudo certbot --nginx -d inventariopro.usereserva.com
     ```
     -   Siga as instruções na tela.
     -   Quando perguntado sobre redirecionar o tráfego HTTP para HTTPS, escolha a opção **2 (Redirect)**.
 
-Após a conclusão, o Certbot configurará a renovação automática. Seu site estará acessível via `https://inventario.suaempresa.com`.
+Após a conclusão, o Certbot configurará a renovação automática. Seu site estará acessível via `https://inventariopro.usereserva.com`.
