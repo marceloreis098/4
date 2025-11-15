@@ -513,7 +513,7 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
 
     // FIX: Explicitly type the 'prev' and 'p' parameters to resolve incorrect 'unknown' type inference errors.
     const toggleProductExpansion = (productName: string) => {
-        setExpandedProducts((prev: string[]) => 
+        setExpandedProducts((prev: string[]) =>
             prev.includes(productName)
             ? prev.filter((p: string) => p !== productName)
             : [...prev, productName]
