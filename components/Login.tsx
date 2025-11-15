@@ -25,7 +25,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, isSsoEnabled }) => {
       onLoginSuccess(user);
     } catch (err: any) {
       if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
-        setError('Não foi possível conectar ao servidor. Verifique sua conexão com a internet e se a API está em execução.');
+        setError('Não foi possível conectar ao servidor. Verifique a sua conexão com a internet, se a API está em execução e se a configuração do proxy reverso (Nginx) está correta.');
       } else {
         setError(err.message || 'Usuário ou senha inválidos.');
       }

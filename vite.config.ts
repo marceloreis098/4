@@ -13,8 +13,7 @@ export default defineConfig({
         'lucide-react',
         'recharts',
         'qrcode.react',
-        'xlsx',
-        '@google/genai'
+        'xlsx'
       ],
     },
   },

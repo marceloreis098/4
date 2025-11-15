@@ -12,12 +12,16 @@ const handleResponse = async (response: Response) => {
 };
 
 const getApiBaseUrl = () => {
-    // Em ambientes de produção (servidos em qualquer porta), construímos a URL completa
-    // para a API na porta 3001. Isso permite que o frontend (na porta 3000 ou servido pelo Nginx)
-    // contate diretamente a API, resolvendo problemas de proxy/roteamento.
-    const protocol = window.location.protocol;
-    const hostname = window.location.hostname;
-    return `${protocol}//${hostname}:3001/api`;
+    // Para ambientes de produção com proxy reverso (como Nginx),
+    // usar um caminho relativo '/api' garante que as requisições
+    // sejam enviadas para o mesmo host do frontend, deixando o proxy
+    // rotear para o backend na porta 3001.
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // Ambiente de desenvolvimento local
+        return 'http://localhost:3001/api';
+    }
+    // Ambiente de produção (assume proxy reverso)
+    return '/api';
 };
 
 
