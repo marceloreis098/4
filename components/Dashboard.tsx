@@ -138,14 +138,11 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
 
   const statusData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
   
-  // FIX: Using Array.from() ensures correct type inference from the Set, preventing variables from being typed as 'unknown'.
-  // FIX: Explicitly typing array and map/forEach variables to prevent incorrect 'unknown' type inference.
+  // FIX: Explicitly typed array and map/forEach variables to prevent incorrect 'unknown' type inference.
   const { policyGroupModelData, allModels } = useMemo(() => {
     if (!equipment.length) return { policyGroupModelData: [], allModels: [] };
 
-    // FIX: Explicitly set the type for `new Set` to `<string>` to fix incorrect type inference.
     const allPolicyGroups: string[] = Array.from(new Set<string>(equipment.map((e: Equipment) => e.grupoPoliticas || 'Não especificado'))).sort();
-    // FIX: Explicitly set the type for `new Set` to `<string>` to fix incorrect type inference.
     const allModels: string[] = Array.from(new Set<string>(equipment.map((e: Equipment) => e.model || 'Não especificado'))).sort();
 
     const data = allPolicyGroups.map((group: string) => {

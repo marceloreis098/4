@@ -21,12 +21,6 @@ export interface User {
     ssoProvider?: string;
 }
 
-// FIX: Add ChatMessage interface to resolve missing type error.
-export interface ChatMessage {
-    role: 'user' | 'model';
-    parts: Array<{ text: string }>;
-}
-
 export interface Equipment {
     id: number;
     equipamento: string;
@@ -119,4 +113,9 @@ export interface AppSettings {
     termo_devolucao_template?: string;
     hasInitialConsolidationRun?: boolean;
     lastAbsoluteUpdateTimestamp?: string;
+}
+// FIX: Add ChatMessage interface to fix import errors in geminiService and AIAssistant
+export interface ChatMessage {
+    role: 'user' | 'model';
+    parts: Array<{ text: string }>;
 }

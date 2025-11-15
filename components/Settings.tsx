@@ -246,7 +246,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
             } else {
                 alert(`Falha ao zerar o banco: ${result.message}`);
             }
-        } catch (error) {
+        } catch (error: any) {
             // FIX: Corrected error handling for an 'unknown' type in the catch block by explicitly typing the error object.
             alert(`Erro ao zerar o banco: ${(error as Error).message}`);
         } finally {

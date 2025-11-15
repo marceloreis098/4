@@ -58,8 +58,8 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
         const result: string[] = [];
         let current = '';
         let inQuote = false;
+        // Handle comma as separator
         const separator = ',';
-
         for (let i = 0; i < line.length; i++) {
             const char = line[i];
             if (char === '"') {
@@ -97,12 +97,11 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
                 }
             });
 
-            // Enforce that the serial number must exist and be non-empty for an item to be valid.
-            if (!entry.serial || entry.serial.trim() === '') {
-                return null;
-            }
             return entry;
-        }).filter((item): item is PartialEquipment => item !== null);
+        }).filter((item): item is PartialEquipment => {
+            // Enforce that the serial number must exist and be non-empty for an item to be valid.
+            return item !== null && !!item.serial && item.serial.trim() !== '';
+        });
     };
 
     const handleConsolidate = async () => {
@@ -117,51 +116,49 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
             const absoluteText = await absoluteFile.text();
             
             const baseMappings: { [key: string]: keyof Equipment } = {
-                'EQUIPAMENTO': 'equipamento', 'GARANTIA': 'garantia', 'PATRIMONIO': 'patrimonio', 'SERIAL': 'serial',
-                'USUÁRIO ATUAL': 'usuarioAtual', 'USUÁRIO ANTERIOR': 'usuarioAnterior', 'LOCAL': 'local', 'SETOR': 'setor',
-                'DATA ENTREGA O USUÁRIO': 'dataEntregaUsuario', 'STATUS': 'status', 'DATA DE DEVOLUÇÃO': 'dataDevolucao',
-                'TIPO': 'tipo', 'NOTA DE COMPRA': 'notaCompra', 'NOTA / PL K&M': 'notaPlKm',
-                'TERMO DE RESPONSABILIDADE': 'termoResponsabilidade', 'FOTO': 'foto', 'QR CODE': 'qrCode',
-                'MARCA': 'brand', 'MODELO': 'model', 'EMAIL COLABORADOR': 'emailColaborador',
-                // Novos campos - Planilha Base
-                'IDENTIFICADOR': 'identificador', 'NOME DO SO': 'nomeSO', 'MEMÓRIA FÍSICA TOTAL': 'memoriaFisicaTotal', 
-                'GRUPO DE POLÍTICAS': 'grupoPoliticas', 'PAÍS': 'pais', 'CIDADE': 'cidade', 'ESTADO/PROVÍNCIA': 'estadoProvincia'
+                'EQUIPAMENTO': 'equipamento', 'GARANTIA': 'garantia', 'SERIAL': 'serial',
+                'USUÁRIOATUAL': 'usuarioAtual', 'USUÁRIOANTERIOR': 'usuarioAnterior', 'LOCAL': 'local', 'SETOR': 'setor',
+                'DATAENTREGAOUSUÁRIO': 'dataEntregaUsuario', 'STATUS': 'status', 'DATADEDEVOLUÇÃO': 'dataDevolucao',
+                'TIPO': 'tipo', 'NOTADECOMPRA': 'notaCompra', 'NOTA/PLK&M': 'notaPlKm',
+                'TERMODERESPONSABILIDADE': 'termoResponsabilidade', 'FOTO': 'foto', 'QRCODE': 'qrCode'
             };
 
             const absoluteMappings: { [key: string]: keyof Equipment } = {
                 'NOMEDODISPOSITIVO': 'equipamento', 'NÚMERODESÉRIE': 'serial',
-                'NOMEDOUSUÁRIOATUAL': 'usuarioAtual', 'MARCA': 'brand', 'MODELO': 'model',
-                'EMAIL DO COLABORADOR': 'emailColaborador',
-                // Novos campos - Relatório Absolute
-                'IDENTIFICADOR': 'identificador', 'NOME DO SO': 'nomeSO', 'MEMÓRIA FÍSICA TOTAL': 'memoriaFisicaTotal', 
-                'GRUPO DE POLÍTICAS': 'grupoPoliticas', 'PAÍS': 'pais', 'CIDADE': 'cidade', 'ESTADO/PROVÍNCIA': 'estadoProvincia'
+                'NOMEDOUSUÁRIOATUAL': 'usuarioAtual', 'MARCA': 'brand', 'MODELO': 'model'
             };
 
             const baseData = parseCsv(baseText, baseMappings);
             const absoluteData = parseCsv(absoluteText, absoluteMappings);
             
-            const consolidatedMap = new Map<string, PartialEquipment>();
-
-            // Process base data first. This handles duplicates within the base file (last one wins).
-            baseData.forEach(baseItem => {
-                const key = baseItem.serial!.toUpperCase().replace(/ /g, '');
-                consolidatedMap.set(key, baseItem);
+            const absoluteMap = new Map<string, PartialEquipment>();
+            absoluteData.forEach(item => {
+                 // The filter in parseCsv ensures item.serial is a non-empty string
+                absoluteMap.set(item.serial!.toUpperCase(), item);
             });
 
-            // Process absolute data, merging with or adding to the base data.
-            // This handles duplicates within the absolute file and ensures its data has priority.
-            absoluteData.forEach(absoluteItem => {
-                const key = absoluteItem.serial!.toUpperCase().replace(/ /g, '');
-                const existingItem = consolidatedMap.get(key) || {};
-                consolidatedMap.set(key, { ...existingItem, ...absoluteItem });
+            const finalData: PartialEquipment[] = [];
+            const mergedSerials = new Set<string>();
+
+            baseData.forEach(baseItem => {
+                let mergedItem = { ...baseItem };
+                 // The filter in parseCsv ensures baseItem.serial is a non-empty string
+                const serial = baseItem.serial!.toUpperCase();
+                if (absoluteMap.has(serial)) {
+                    const absoluteItem = absoluteMap.get(serial)!;
+                    // Prioritize data from Absolute report (more current) for overlapping fields
+                    mergedItem = { ...baseItem, ...absoluteItem };
+                    mergedSerials.add(serial);
+                }
+                finalData.push(mergedItem);
             });
             
-            const finalData = Array.from(consolidatedMap.values()).map(item => {
-                // If there's a current user, force the status to 'Em Uso'
-                if (item.usuarioAtual && item.usuarioAtual.trim() !== '') {
-                    return { ...item, status: 'Em Uso' };
+            absoluteData.forEach(absoluteItem => {
+                // The filter in parseCsv ensures absoluteItem.serial is a non-empty string
+                const serial = absoluteItem.serial!.toUpperCase();
+                if (!mergedSerials.has(serial)) {
+                    finalData.push(absoluteItem);
                 }
-                return item;
             });
 
             setConsolidatedData(finalData);
@@ -207,10 +204,7 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
         });
     }, [searchTerm, consolidatedData]);
 
-    const tableHeaders: (keyof Equipment)[] = [
-        'equipamento', 'serial', 'usuarioAtual', 'local', 'setor', 'status', 'brand', 'model', 
-        'identificador', 'nomeSO', 'memoriaFisicaTotal', 'grupoPoliticas', 'pais', 'cidade', 'estadoProvincia'
-    ];
+    const tableHeaders: (keyof Equipment)[] = ['equipamento', 'serial', 'usuarioAtual', 'local', 'setor', 'status', 'brand', 'model'];
 
     return (
         <div className="bg-white dark:bg-dark-card p-6 rounded-lg shadow-md">
@@ -241,7 +235,6 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
                     onClick={handleConsolidate}
                     disabled={!baseFile || !absoluteFile || isLoading || isSaving}
                     className="bg-brand-primary text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 flex items-center justify-center gap-2 text-lg font-semibold"
-                    aria-label={isLoading ? 'Processando dados' : 'Consolidar dados'}
                 >
                     {isLoading ? <Icon name="LoaderCircle" className="animate-spin" /> : <Icon name="Combine" />}
                     {isLoading ? 'Processando...' : '1. Consolidar Dados'}
@@ -260,8 +253,7 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
                         placeholder="Buscar nos resultados..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-2 mb-4 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-dark-text-primary"
-                        aria-label="Buscar na pré-visualização"
+                        className="w-full p-2 mb-4 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800"
                     />
                     <div className="overflow-x-auto max-h-96 border dark:border-dark-border rounded-lg">
                         <table className="w-full text-sm text-left text-gray-700 dark:text-dark-text-secondary">
@@ -288,7 +280,6 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
                             onClick={handleSaveToSystem}
                             disabled={isSaving}
                             className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400 flex items-center justify-center gap-2 text-lg font-semibold"
-                            aria-label={isSaving ? 'Salvando inventário' : 'Salvar e substituir inventário'}
                         >
                             {isSaving ? <Icon name="LoaderCircle" className="animate-spin" /> : <Icon name="Save" />}
                             {isSaving ? 'Salvando...' : '2. Salvar e Substituir Inventário'}

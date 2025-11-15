@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Equipment, User, UserRole, EquipmentHistory, AppSettings } from '../types';
 import Icon from './common/Icon';
@@ -234,7 +235,7 @@ const EquipmentFormModal: React.FC<{
                     <label className="sm:col-span-2 text-md font-semibold text-gray-700 dark:text-dark-text-primary">Detalhes Técnicos e Localização</label>
 
                     <input type="text" name="identificador" placeholder="Identificador (UUID/GUID)" value={formData.identificador || ''} onChange={handleChange} className="p-2 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800" />
-                    <input type="text" name="nomeSO" placeholder="Nome do Sistema Operacional" value={formData.nomeSO || ''} onChange={handleChange} className="p-2 border dark:border-border rounded-md bg-white dark:bg-gray-800" />
+                    <input type="text" name="nomeSO" placeholder="Nome do Sistema Operacional" value={formData.nomeSO || ''} onChange={handleChange} className="p-2 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800" />
                     <input type="text" name="memoriaFisicaTotal" placeholder="Memória Física Total (Ex: 16 GB)" value={formData.memoriaFisicaTotal || ''} onChange={handleChange} className="p-2 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800" />
                     <input type="text" name="grupoPoliticas" placeholder="Grupo de Políticas (Ex: AD-Users)" value={formData.grupoPoliticas || ''} onChange={handleChange} className="p-2 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800" />
                     <input type="text" name="pais" placeholder="País" value={formData.pais || ''} onChange={handleChange} className="p-2 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800" />

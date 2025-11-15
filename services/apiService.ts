@@ -12,10 +12,12 @@ const handleResponse = async (response: Response) => {
 };
 
 const getApiBaseUrl = () => {
-    // Simplificado para sempre usar um caminho relativo.
-    // Isso pressupõe um proxy reverso (Nginx) em produção para rotear /api para o backend.
-    // Resolve o problema de conexão quando o acesso direto à porta da API (3001) é bloqueado.
-    return `/api`;
+    // Em ambientes de produção (servidos em qualquer porta), construímos a URL completa
+    // para a API na porta 3001. Isso permite que o frontend (na porta 3000 ou servido pelo Nginx)
+    // contate diretamente a API, resolvendo problemas de proxy/roteamento.
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    return `${protocol}//${hostname}:3001/api`;
 };
 
 
@@ -137,7 +139,6 @@ export const importEquipment = (data: Omit<Equipment, 'id'>[], username: string)
     return apiRequest('/equipment/import', { method: 'POST', body: JSON.stringify({ equipmentList: data, username }) });
 }
 
-// FIX: Add missing periodicUpdateEquipment function to resolve import error.
 export const periodicUpdateEquipment = (data: Partial<Equipment>[], username: string): Promise<{success: boolean, message: string}> => {
     return apiRequest('/equipment/periodic-update', { method: 'POST', body: JSON.stringify({ equipmentList: data, username }) });
 };
