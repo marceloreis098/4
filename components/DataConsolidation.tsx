@@ -171,7 +171,6 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
         }
     };
     
-    // FIX: Properly handle the success/error response from the importEquipment API call.
     const handleSaveToSystem = async () => {
         if (consolidatedData.length === 0) return;
         if (!window.confirm(`Esta ação substituirá TODO o inventário de equipamentos por ${consolidatedData.length} novos itens consolidados. Esta ação é irreversível. Deseja continuar?`)) return;
@@ -180,7 +179,6 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
         setError(null);
         try {
             const dataToSave = consolidatedData.map(item => ({...item, id: undefined})) as Omit<Equipment, 'id'>[];
-            // FIX: Pass currentUser.username to importEquipment for authentication.
             const result = await importEquipment(dataToSave, currentUser.username);
             if (result.success) {
                 alert('Inventário consolidado e salvo com sucesso! A aplicação será recarregada para refletir as mudanças.');

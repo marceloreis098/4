@@ -364,7 +364,8 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
             }
         } catch (error: any) {
             console.error("Failed to save license totals:", error);
-            alert("Falha ao salvar o total de licenças. Tente novamente. Detalhes: " + error.message);
+            // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+            alert("Falha ao salvar o total de licenças. Tente novamente. Detalhes: " + (error as Error).message);
         }
     };
 
@@ -428,7 +429,8 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
     
         } catch (error: any) {
             console.error("Failed to save product name changes:", error);
-            alert(`Erro ao salvar alterações: ${error.message}`);
+            // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+            alert(`Erro ao salvar alterações: ${(error as Error).message}`);
         } finally {
             // 5. Reload all data from server to ensure consistency
             loadLicensesAndProducts();
@@ -511,7 +513,6 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
       }, {} as Record<string, License[]>);
     }, [filteredLicenses]);
 
-    // FIX: Explicitly typed the 'prev' and 'p' parameters to resolve incorrect 'unknown' type inference errors.
     const toggleProductExpansion = (productName: string) => {
         setExpandedProducts((prev: string[]) =>
             prev.includes(productName)
@@ -577,136 +578,133 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
         return null;
     }
 
-    const ActionButtons: React.FC<{license: License}> = ({license}) => (
-        <div className="flex items-center gap-3">
-            <button onClick={() => handleOpenModal(license)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" title="Editar"><Icon name="Pencil" size={16} /></button>
-            <button onClick={() => handleDelete(license.id)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300" title="Excluir"><Icon name="Trash2" size={16} /></button>
-        </div>
-    );
+    const ActionButtons: React.FC<{ license: License }> = ({ license }) => {
+        // A 'created_by_id' might be null for older records.
+        // Let's assume non-admins cannot edit/delete these older records for safety.
+        const isOwner = currentUser.id === license.created_by_id;
+
+        // An Admin can always edit/delete approved or pending items.
+        // A User can only edit/delete their own items if they are still pending.
+        const canEdit = isAdmin || (isOwner && license.approval_status === 'pending_approval');
+        const canDelete = isAdmin || (isOwner && license.approval_status === 'pending_approval');
+        
+        return (
+            <div className="flex items-center gap-2">
+                {canEdit && (
+                    <button onClick={() => handleOpenModal(license)} className="text-blue-600 hover:text-blue-800" title="Editar">
+                        <Icon name="Pencil" size={16} />
+                    </button>
+                )}
+                {canDelete && (
+                    <button onClick={() => handleDelete(license.id)} className="text-red-600 hover:text-red-800" title="Excluir">
+                        <Icon name="Trash2" size={16} />
+                    </button>
+                )}
+            </div>
+        );
+    };
 
     return (
-         <div className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-lg shadow-md">
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-4">
-                <h2 className="text-2xl font-bold text-brand-dark dark:text-dark-text-primary">Controle de Licenças</h2>
-                <div className="flex flex-wrap gap-2">
-                    {isAdmin && (
-                         <button onClick={() => setIsProductModalOpen(true)} className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2">
-                            <Icon name="List" size={18}/> Gerenciar Produtos
+        <div className="space-y-6">
+            <div className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-lg shadow-md">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-4">
+                    <h2 className="text-2xl font-bold text-brand-dark dark:text-dark-text-primary">Controle de Licenças</h2>
+                    <div className="flex flex-wrap gap-2 self-start sm:self-center">
+                         {isAdmin && (
+                            <button onClick={() => setIsProductModalOpen(true)} className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2">
+                                <Icon name="Settings2" size={18}/> Gerenciar Produtos
+                            </button>
+                        )}
+                        <button onClick={() => handleOpenModal()} className="bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                            <Icon name="CirclePlus" size={18}/> Nova Licença
                         </button>
-                    )}
-                    <button onClick={() => handleOpenModal()} className="bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                        <Icon name="CirclePlus" size={18}/> Nova Licença
-                    </button>
+                    </div>
                 </div>
-            </div>
-
-            <div className="mb-4">
-                 <input
+                <input
                     type="text"
-                    placeholder="Buscar por Produto, Usuário, Chave..."
+                    placeholder="Buscar por produto, usuário ou chave..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full p-2 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-dark-text-primary"
+                    className="w-full p-2 border dark:border-dark-border rounded-md bg-white dark:bg-gray-800"
                 />
             </div>
             
             {loading ? (
-                <div className="flex justify-center items-center py-10">
+                 <div className="flex justify-center items-center py-10">
                     <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
                 </div>
-            ) : (
+            ) : Object.keys(groupedLicenses).length > 0 ? (
                 <div className="space-y-4">
-                    {Object.keys(groupedLicenses).sort().map(productName => {
-                        const licensesInGroup = groupedLicenses[productName];
+                    {productNames.filter(name => groupedLicenses[name]).map((productName) => {
+                        const licensesForProduct = groupedLicenses[productName];
+                        const total = totalLicenses[productName] ?? 0;
+                        const used = licensesForProduct.length;
                         const isExpanded = expandedProducts.includes(productName);
-                        const usedCount = licensesInGroup.filter(l => l.approval_status !== 'rejected').length;
-                        const totalCount = totalLicenses[productName] || 0;
-                        const availableCount = totalCount - usedCount;
-                        const pendingCount = licensesInGroup.filter(l => l.approval_status === 'pending_approval').length;
-                        
+                        const isOverLimit = used > total;
+
                         return (
-                            <div key={productName} className="border dark:border-dark-border rounded-lg overflow-hidden transition-all duration-300 animate-fade-in-up">
-                                <header 
-                                    className="bg-gray-50 dark:bg-dark-bg p-4 flex justify-between items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                             <div key={productName} className="bg-white dark:bg-dark-card rounded-lg shadow-md">
+                                <div
+                                    className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
                                     onClick={() => toggleProductExpansion(productName)}
-                                    aria-expanded={isExpanded}
-                                    aria-controls={`licenses-${productName.replace(/\s+/g, '-')}`}
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <Icon name="Layers" size={24} className="text-brand-secondary dark:text-dark-text-secondary" />
-                                        <h3 className="font-bold text-lg text-brand-dark dark:text-dark-text-primary">{productName}</h3>
-                                         {pendingCount > 0 && (
-                                            <span className="text-xs font-semibold bg-yellow-200 text-yellow-800 px-2.5 py-0.5 rounded-full">{pendingCount} Pendente(s)</span>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-6">
-                                        <div className="hidden lg:flex items-center gap-4 text-sm font-medium">
-                                            <span title="Total de licenças contratadas" className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
-                                                Total:
-                                                <EditableTotal productName={productName} value={totalCount} onSave={handleSetTotalLicenseCount} disabled={!isAdmin} />
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-bold text-brand-secondary dark:text-dark-text-primary">{productName}</h3>
+                                        <div className={`text-sm flex items-center gap-3 mt-1 ${isOverLimit ? 'text-red-500 font-semibold' : 'text-gray-600 dark:text-dark-text-secondary'}`}>
+                                            <span>
+                                                Utilizadas: <span className="font-bold">{used}</span>
                                             </span>
-                                            <span title="Licenças registradas no sistema" className="flex items-center gap-1.5 text-gray-600 dark:text-dark-text-secondary">
-                                                Usadas:
-                                                <span className="bg-brand-secondary dark:bg-dark-border text-white dark:text-dark-text-primary text-sm font-semibold px-2.5 py-0.5 rounded-full">{usedCount}</span>
+                                            <span className="flex items-center">
+                                                Total: <EditableTotal productName={productName} value={total} onSave={handleSetTotalLicenseCount} disabled={!isAdmin} />
                                             </span>
-                                            <span title="Licenças disponíveis para uso" className={`flex items-center gap-1.5 ${availableCount < 0 ? 'text-red-500' : availableCount === 0 ? 'text-yellow-500' : 'text-green-600'}`}>
-                                                Disponíveis:
-                                                <span className="font-bold text-lg">{availableCount}</span>
-                                            </span>
+                                            {isOverLimit && <span className="flex items-center gap-1"><Icon name="TriangleAlert" size={14} /> Excedido!</span>}
                                         </div>
-                                        <Icon name={isExpanded ? "ChevronDown" : "ChevronRight"} size={24} className="text-gray-500 dark:text-dark-text-secondary transition-transform" />
                                     </div>
-                                </header>
-
+                                    <Icon name={isExpanded ? 'ChevronUp' : 'ChevronDown'} size={24} className="text-gray-500" />
+                                </div>
                                 {isExpanded && (
-                                    <section id={`licenses-${productName.replace(/\s+/g, '-')}`} className="overflow-x-auto animate-fade-in">
-                                        <table className="w-full text-sm text-left text-gray-700 dark:text-dark-text-secondary">
-                                            <thead className="text-xs text-gray-800 dark:text-dark-text-primary uppercase bg-gray-100 dark:bg-gray-900/50">
-                                                <tr>
-                                                    <th scope="col" className="px-6 py-3">Usuário</th>
-                                                    <th scope="col" className="px-6 py-3">Chave/Serial</th>
-                                                    <th scope="col" className="px-6 py-3">Expiração</th>
-                                                    <th scope="col" className="px-6 py-3">Status</th>
-                                                    {isAdmin && <th scope="col" className="px-6 py-3 text-right">Ações</th>}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {licensesInGroup.map(license => (
-                                                    <tr key={license.id} className={`border-b dark:border-dark-border last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 ${license.approval_status === 'pending_approval' ? 'bg-yellow-50 dark:bg-yellow-900/20' : license.approval_status === 'rejected' ? 'bg-red-50 dark:bg-red-900/20 opacity-70' : 'bg-white dark:bg-dark-card'}`}>
-                                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-dark-text-primary">{license.usuario}</td>
-                                                        <td className="px-6 py-4 font-mono text-xs">{license.chaveSerial}</td>
-                                                        <td className="px-6 py-4">
-                                                            <ExpirationStatus dateStr={license.dataExpiracao}/>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                          <StatusIndicator license={license} />
-                                                        </td>
-                                                        {isAdmin && (
-                                                            <td className="px-6 py-4 flex justify-end">
-                                                                <ActionButtons license={license} />
-                                                            </td>
-                                                        )}
+                                    <div className="border-t dark:border-dark-border">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-sm text-left">
+                                                <thead className="text-xs text-gray-700 dark:text-dark-text-secondary uppercase bg-gray-50 dark:bg-dark-bg">
+                                                    <tr>
+                                                        <th className="px-4 py-2">Usuário</th>
+                                                        <th className="px-4 py-2">Chave/Serial</th>
+                                                        <th className="px-4 py-2">Setor</th>
+                                                        <th className="px-4 py-2">Vencimento</th>
+                                                        <th className="px-4 py-2">Ações</th>
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </section>
+                                                </thead>
+                                                <tbody className="divide-y dark:divide-dark-border">
+                                                    {licensesForProduct.map(license => (
+                                                        <tr key={license.id} className={`${license.approval_status === 'pending_approval' ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'}`}>
+                                                            <td className="px-4 py-3 font-medium text-gray-900 dark:text-dark-text-primary">
+                                                                {license.usuario} <StatusIndicator license={license} />
+                                                            </td>
+                                                            <td className="px-4 py-3 font-mono text-xs">{license.chaveSerial}</td>
+                                                            <td className="px-4 py-3">{license.setor || 'N/A'}</td>
+                                                            <td className="px-4 py-3"><ExpirationStatus dateStr={license.dataExpiracao} /></td>
+                                                            <td className="px-4 py-3"><ActionButtons license={license} /></td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 )}
-                            </div>
-                        );
+                             </div>
+                        )
                     })}
-
-                    {Object.keys(groupedLicenses).length === 0 && !loading && (
-                        <div className="text-center py-10 text-gray-500 dark:text-dark-text-secondary">
-                            <Icon name="SearchX" size={48} className="mx-auto text-gray-400 mb-4" />
-                            <p>Nenhuma licença encontrada.</p>
-                        </div>
-                    )}
+                </div>
+            ) : (
+                <div className="text-center py-10 text-gray-500 dark:text-dark-text-secondary">
+                    <Icon name="SearchX" size={48} className="mx-auto text-gray-400 mb-4" />
+                    <p>Nenhuma licença encontrada.</p>
                 </div>
             )}
 
             {isModalOpen && <LicenseFormModal license={editingLicense} productNames={productNames} onClose={handleCloseModal} onSave={handleSave} currentUser={currentUser} />}
-            {isProductModalOpen && isAdmin && <ProductManagementModal initialProductNames={productNames} onClose={() => setIsProductModalOpen(false)} onSave={handleSaveProductNames} />}
+            {isProductModalOpen && <ProductManagementModal initialProductNames={productNames} onClose={() => setIsProductModalOpen(false)} onSave={handleSaveProductNames} />}
         </div>
     );
 };
