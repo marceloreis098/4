@@ -12,16 +12,9 @@ const handleResponse = async (response: Response) => {
 };
 
 const getApiBaseUrl = () => {
-    const { hostname, protocol, port } = window.location;
-
-    // Se estiver acessando diretamente o servidor de desenvolvimento/servidor de arquivos estáticos (porta 3000)
-    // ou em localhost, construa a URL absoluta para a API na porta 3001.
-    if (hostname === 'localhost' || port === '3000') {
-        return `${protocol}//${hostname}:3001/api`;
-    }
-
-    // Em um ambiente de produção corretamente configurado (acessado via porta 80/443),
-    // o caminho relativo '/api' será corretamente tratado pelo proxy reverso (Nginx).
+    // Simplificado para sempre usar um caminho relativo.
+    // Isso pressupõe um proxy reverso (Nginx) em produção para rotear /api para o backend.
+    // Resolve o problema de conexão quando o acesso direto à porta da API (3001) é bloqueado.
     return `/api`;
 };
 
