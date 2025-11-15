@@ -143,8 +143,10 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
   const { policyGroupModelData, allModels } = useMemo(() => {
     if (!equipment.length) return { policyGroupModelData: [], allModels: [] };
 
-    const allPolicyGroups: string[] = Array.from(new Set(equipment.map(e => e.grupoPoliticas || 'Não especificado'))).sort();
-    const allModels: string[] = Array.from(new Set(equipment.map(e => e.model || 'Não especificado'))).sort();
+    // FIX: Explicitly set the type for `new Set` to `<string>` to fix incorrect type inference.
+    const allPolicyGroups: string[] = Array.from(new Set<string>(equipment.map(e => e.grupoPoliticas || 'Não especificado'))).sort();
+    // FIX: Explicitly set the type for `new Set` to `<string>` to fix incorrect type inference.
+    const allModels: string[] = Array.from(new Set<string>(equipment.map(e => e.model || 'Não especificado'))).sort();
 
     const data = allPolicyGroups.map((group: string) => {
       const groupData: { name: string; [key: string]: number | string } = { name: group };

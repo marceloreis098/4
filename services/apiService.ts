@@ -12,9 +12,19 @@ const handleResponse = async (response: Response) => {
 };
 
 const getApiBaseUrl = () => {
-    // As requisições são encaminhadas pelo servidor web (ex: Nginx) para o backend da API.
+    const { hostname, protocol, port } = window.location;
+
+    // Se estiver acessando diretamente o servidor de desenvolvimento/servidor de arquivos estáticos (porta 3000)
+    // ou em localhost, construa a URL absoluta para a API na porta 3001.
+    if (hostname === 'localhost' || port === '3000') {
+        return `${protocol}//${hostname}:3001/api`;
+    }
+
+    // Em um ambiente de produção corretamente configurado (acessado via porta 80/443),
+    // o caminho relativo '/api' será corretamente tratado pelo proxy reverso (Nginx).
     return `/api`;
 };
+
 
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     const headers = {
