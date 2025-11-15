@@ -25,14 +25,23 @@ const App: React.FC = () => {
   const [isSsoEnabled, setIsSsoEnabled] = useState(false);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      const user = JSON.parse(savedUser);
-      if (user.is2FAEnabled && !sessionStorage.getItem('2fa_verified')) {
-        setUserFor2FA(user);
-      } else {
-        setCurrentUser(user);
-      }
+    try {
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser && savedUser !== 'undefined') {
+          const user = JSON.parse(savedUser);
+          if (user && typeof user === 'object') {
+            if (user.is2FAEnabled && !sessionStorage.getItem('2fa_verified')) {
+              setUserFor2FA(user);
+            } else {
+              setCurrentUser(user);
+            }
+          } else {
+             localStorage.removeItem('currentUser');
+          }
+        }
+    } catch (e) {
+        console.error("Falha ao analisar o usuário do localStorage. Limpando.", e);
+        localStorage.removeItem('currentUser');
     }
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
