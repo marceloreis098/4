@@ -1,5 +1,4 @@
 import { GoogleGenAI, Chat } from "@google/genai";
-import { ChatMessage } from '../types';
 
 const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
 let chat: Chat | null = null;

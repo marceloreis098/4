@@ -96,12 +96,6 @@ export interface AuditLogEntry {
     timestamp: string;
 }
 
-// FIX: Added missing ChatMessage type for the AI Assistant feature.
-export interface ChatMessage {
-    role: 'user' | 'model';
-    parts: { text: string }[];
-}
-
 export interface AppSettings {
     companyName: string;
     isSsoEnabled: boolean;
@@ -119,4 +113,10 @@ export interface AppSettings {
     termo_devolucao_template?: string;
     hasInitialConsolidationRun?: boolean;
     lastAbsoluteUpdateTimestamp?: string;
+}
+
+// FIX: Add ChatMessage interface to resolve import error.
+export interface ChatMessage {
+    role: 'user' | 'model';
+    parts: { text: string }[];
 }

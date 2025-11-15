@@ -180,6 +180,7 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
         setError(null);
         try {
             const dataToSave = consolidatedData.map(item => ({...item, id: undefined})) as Omit<Equipment, 'id'>[];
+            // FIX: Pass currentUser.username to importEquipment for authentication.
             const result = await importEquipment(dataToSave, currentUser.username);
             if (result.success) {
                 alert('Inventário consolidado e salvo com sucesso! A aplicação será recarregada para refletir as mudanças.');
