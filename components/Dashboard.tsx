@@ -138,7 +138,6 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
 
   const statusData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
   
-  // FIX: Explicitly typed array and map/forEach variables to prevent incorrect 'unknown' type inference.
   const { policyGroupModelData, allModels } = useMemo(() => {
     if (!equipment.length) return { policyGroupModelData: [], allModels: [] };
 

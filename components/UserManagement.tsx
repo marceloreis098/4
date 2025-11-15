@@ -10,8 +10,6 @@ const UserFormModal: React.FC<{
     onSave: () => void;
     currentUser: User;
 }> = ({ user, onClose, onSave, currentUser }) => {
-    // FIX: Add `is2FAEnabled` to formData state with a default value of false for new users.
-    // Also, explicitly type the formData to match the expected structure, omitting fields not managed by this form for better type safety.
     const [formData, setFormData] = useState<Omit<User, 'id' | 'lastLogin' | 'avatarUrl' | 'ssoProvider'>>({
         realName: '',
         username: '',

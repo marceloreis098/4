@@ -36,27 +36,22 @@ const AuditLog: React.FC = () => {
     
     const uniqueUsers = [...new Set(logs.map(log => log.username))];
 
-    // FIX: The function must return a key from the imported `icons` object, not from a property on the Icon component.
     const getIconForType = (type: AuditLogEntry['target_type']): keyof typeof icons => {
         switch(type) {
             case 'EQUIPMENT': return 'Computer';
             case 'LICENSE': return 'ScrollText';
             case 'USER': return 'User';
-            // FIX: Corrected icon name from 'FileQuestionMark' to 'FileQuestion' which is a valid lucide-react icon.
             default: return 'FileQuestion';
         }
     };
 
-    // FIX: The function must return a key from the imported `icons` object, not from a property on the Icon component.
     const getActionInfo = (log: AuditLogEntry): { text: string; color: string; icon: keyof typeof icons } => {
         switch (log.action_type) {
-            // FIX: Corrected icon name from 'PlusCircle' to 'CirclePlus' to match a valid name from lucide-react.
             case 'CREATE': return { text: 'Criação', color: 'text-green-500', icon: 'CirclePlus' };
             case 'UPDATE': return { text: 'Atualização', color: 'text-yellow-500', icon: 'Pencil' };
             case 'DELETE': return { text: 'Exclusão', color: 'text-red-500', icon: 'Trash2' };
             case 'LOGIN': return { text: 'Login', color: 'text-blue-500', icon: 'LogIn' };
             case 'LOGOUT': return { text: 'Logout', color: 'text-gray-500', icon: 'LogOut' };
-            // FIX: Replaced potentially invalid icon name with a safe and valid alternative ('Info').
             default: return { text: log.action_type, color: 'text-gray-500', icon: 'Info' };
         }
     };

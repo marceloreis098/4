@@ -227,8 +227,8 @@ app.post('/api/database/clear', isAdmin, async (req, res) => { const connection 
 const startServer = async () => {
     try {
         await runMigrations();
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
+        app.listen(PORT, '0.0.0.0', () => {
+            console.log(`Server running on port ${PORT} and listening on all interfaces.`);
         });
     } catch (err) {
         console.error("Failed to start server due to migration errors:", err);
