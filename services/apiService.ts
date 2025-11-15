@@ -12,9 +12,10 @@ const handleResponse = async (response: Response) => {
 };
 
 const getApiBaseUrl = () => {
-    // Para ambientes de desenvolvimento, usa localhost:3001
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://localhost:3001/api';
+    // Para ambientes de desenvolvimento (rodando na porta 3000), aponta para a API na porta 3001.
+    // Isso cobre localhost:3000 e outros hosts de desenvolvimento como inventariopro.usereserva.com:3000
+    if (window.location.port === '3000') {
+        return `${window.location.protocol}//${window.location.hostname}:3001/api`;
     }
     // Para produção, usa um caminho relativo para que o proxy reverso (Nginx) possa lidar com o roteamento.
     return '/api';

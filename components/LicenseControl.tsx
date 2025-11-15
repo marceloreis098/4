@@ -511,7 +511,7 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
       }, {} as Record<string, License[]>);
     }, [filteredLicenses]);
 
-    // FIX: Explicitly type the 'prev' and 'p' parameters to resolve incorrect 'unknown' type inference errors.
+    // FIX: Explicitly typed the 'prev' and 'p' parameters to resolve incorrect 'unknown' type inference errors.
     const toggleProductExpansion = (productName: string) => {
         setExpandedProducts((prev: string[]) =>
             prev.includes(productName)
