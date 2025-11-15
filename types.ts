@@ -21,6 +21,12 @@ export interface User {
     ssoProvider?: string;
 }
 
+// FIX: Add ChatMessage interface to resolve missing type error.
+export interface ChatMessage {
+    role: 'user' | 'model';
+    parts: Array<{ text: string }>;
+}
+
 export interface Equipment {
     id: number;
     equipamento: string;
@@ -113,9 +119,4 @@ export interface AppSettings {
     termo_devolucao_template?: string;
     hasInitialConsolidationRun?: boolean;
     lastAbsoluteUpdateTimestamp?: string;
-}
-
-export interface ChatMessage {
-  role: 'user' | 'model';
-  parts: { text: string }[];
 }

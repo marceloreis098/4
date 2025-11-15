@@ -10,7 +10,6 @@ import AuditLog from './components/AuditLog';
 import Login from './components/Login';
 import TwoFactorAuth from './components/TwoFactorAuth';
 import TwoFactorSetup from './components/TwoFactorSetup'; // Novo componente
-import AIAssistant from './components/AIAssistant';
 import { Page, User, UserRole } from './types';
 import { getSettings } from './services/apiService';
 
@@ -190,7 +189,6 @@ const App: React.FC = () => {
           {renderPage()}
         </main>
       </div>
-      <AIAssistant currentUser={currentUser} />
     </div>
   );
 };
