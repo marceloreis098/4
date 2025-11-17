@@ -362,10 +362,11 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
             } else {
                 alert(`Falha ao salvar o total de licenças: ${result.message}. Tente novamente.`);
             }
-        } catch (error: any) {
+        // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+        // Safely handle error by checking its type before accessing the message property.
+        } catch (error: unknown) {
             console.error("Failed to save license totals:", error);
-            // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
-            alert("Falha ao salvar o total de licenças. Tente novamente. Detalhes: " + (error as Error).message);
+            alert("Falha ao salvar o total de licenças. Tente novamente. Detalhes: " + (error instanceof Error ? error.message : String(error)));
         }
     };
 
@@ -427,10 +428,11 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
                 alert(`Erro ao salvar alterações: ${result.message}`);
             }
     
-        } catch (error: any) {
+        // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+        // Safely handle error by checking its type before accessing the message property.
+        } catch (error: unknown) {
             console.error("Failed to save product name changes:", error);
-            // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
-            alert(`Erro ao salvar alterações: ${(error as Error).message}`);
+            alert(`Erro ao salvar alterações: ${error instanceof Error ? error.message : String(error)}`);
         } finally {
             // 5. Reload all data from server to ensure consistency
             loadLicensesAndProducts();
