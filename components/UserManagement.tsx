@@ -240,7 +240,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
 
             {loading ? (
                 <div className="flex justify-center items-center py-10">
-                    <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                    {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                    <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
                 </div>
             ) : (
                 <>

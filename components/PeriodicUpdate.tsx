@@ -133,7 +133,7 @@ const PeriodicUpdate: React.FC<PeriodicUpdateProps> = ({ currentUser, onUpdateSu
 
             <div className="mt-6 flex justify-center">
                 <button onClick={handleParse} disabled={!csvFile || isLoading || isSaving} className="bg-brand-primary text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 flex items-center justify-center gap-2 text-lg font-semibold">
-                    {isLoading ? <Icon name="LoaderCircle" className="animate-spin" /> : <Icon name="Search" />}
+                    {isLoading ? <Icon name="Loader2" className="animate-spin" /> : <Icon name="Search" />}
                     {isLoading ? 'Analisando...' : '1. Analisar Dados'}
                 </button>
             </div>
@@ -160,7 +160,7 @@ const PeriodicUpdate: React.FC<PeriodicUpdateProps> = ({ currentUser, onUpdateSu
                     </div>
                     <div className="mt-6 flex justify-end">
                         <button onClick={handleSaveToSystem} disabled={isSaving} className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400 flex items-center justify-center gap-2 text-lg font-semibold">
-                            {isSaving ? <Icon name="LoaderCircle" className="animate-spin" /> : <Icon name="Save" />}
+                            {isSaving ? <Icon name="Loader2" className="animate-spin" /> : <Icon name="Save" />}
                             {isSaving ? 'Salvando...' : '2. Salvar e Atualizar Inventário'}
                         </button>
                     </div>

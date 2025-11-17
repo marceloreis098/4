@@ -41,13 +41,15 @@ const AuditLog: React.FC = () => {
             case 'EQUIPMENT': return 'Computer';
             case 'LICENSE': return 'ScrollText';
             case 'USER': return 'User';
-            default: return 'FileQuestionMark';
+            // FIX: Changed invalid icon name 'FileQuestionMark' to 'FileQuestion'.
+            default: return 'FileQuestion';
         }
     };
 
     const getActionInfo = (log: AuditLogEntry): { text: string; color: string; icon: keyof typeof icons } => {
         switch (log.action_type) {
-            case 'CREATE': return { text: 'Criação', color: 'text-green-500', icon: 'CirclePlus' };
+            // FIX: Changed invalid icon name 'CirclePlus' to 'PlusCircle'.
+            case 'CREATE': return { text: 'Criação', color: 'text-green-500', icon: 'PlusCircle' };
             case 'UPDATE': return { text: 'Atualização', color: 'text-yellow-500', icon: 'Pencil' };
             case 'DELETE': return { text: 'Exclusão', color: 'text-red-500', icon: 'Trash2' };
             case 'LOGIN': return { text: 'Login', color: 'text-blue-500', icon: 'LogIn' };
@@ -87,7 +89,8 @@ const AuditLog: React.FC = () => {
 
             {loading ? (
                 <div className="flex justify-center items-center py-10">
-                    <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                    {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                    <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
                 </div>
             ) : error ? (
                 <div className="text-center py-10 text-red-500">{error}</div>

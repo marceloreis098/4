@@ -70,7 +70,8 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ user, onSetupSuccess, o
 
         {isLoading && !error && (
             <div className="my-8 flex flex-col items-center">
-                <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
                 <p className="mt-4 text-gray-500">Gerando seu código de segurança...</p>
             </div>
         )}

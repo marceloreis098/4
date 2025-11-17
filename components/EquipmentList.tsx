@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Equipment, User, UserRole, EquipmentHistory, AppSettings } from '../types';
 import Icon from './common/Icon';
@@ -497,7 +491,8 @@ const EquipmentHistoryModal: React.FC<{ equipmentId: number; onClose: () => void
                 <div className="p-6 overflow-y-auto text-gray-700 dark:text-dark-text-secondary">
                     {loading ? (
                         <div className="flex justify-center items-center py-10">
-                            <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                            {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                            <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
                         </div>
                     ) : error ? (
                         <div className="text-center py-10 text-red-500">{error}</div>
@@ -886,7 +881,8 @@ const EquipmentList: React.FC<EquipmentListProps> = ({ currentUser, companyName 
                         </button>
                     )}
                     <button onClick={() => handleOpenFormModal()} className="bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                        <Icon name="CirclePlus" size={18}/> Novo Equipamento
+                        {/* FIX: Changed invalid icon name 'CirclePlus' to 'PlusCircle'. */}
+                        <Icon name="PlusCircle" size={18}/> Novo Equipamento
                     </button>
                 </div>
             </div>
@@ -921,7 +917,8 @@ const EquipmentList: React.FC<EquipmentListProps> = ({ currentUser, companyName 
             
             {loading ? (
                 <div className="flex justify-center items-center py-10">
-                    <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                    {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                    <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
                 </div>
             ) : (
                 <>

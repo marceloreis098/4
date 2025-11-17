@@ -550,12 +550,12 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
         if (!dateStr || dateStr.toUpperCase() === 'N/A') return <span>Perpétua</span>;
         
         const date = parseDateString(dateStr);
-        if (!date) return <span className="font-semibold flex items-center gap-1.5 text-red-500"><Icon name="TriangleAlert" size={16} /> Data Inválida</span>;
+        if (!date) return <span className="font-semibold flex items-center gap-1.5 text-red-500"><Icon name="AlertTriangle" size={16} /> Data Inválida</span>;
         
         const expiring = isExpiringSoon(date);
         const expired = isExpired(date);
         const color = expired ? 'text-red-500 dark:text-red-400' : expiring ? 'text-yellow-500 dark:text-yellow-400' : '';
-        const icon = expired ? 'TriangleAlert' : expiring ? 'Timer' : null;
+        const icon = expired ? 'AlertTriangle' : expiring ? 'Timer' : null;
         return (
             <span className={`font-semibold flex items-center gap-1.5 ${color}`}>
                 {icon && <Icon name={icon as any} size={16} />}
@@ -616,7 +616,8 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
                             </button>
                         )}
                         <button onClick={() => handleOpenModal()} className="bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                            <Icon name="CirclePlus" size={18}/> Nova Licença
+                            {/* FIX: Changed invalid icon name 'CirclePlus' to 'PlusCircle'. */}
+                            <Icon name="PlusCircle" size={18}/> Nova Licença
                         </button>
                     </div>
                 </div>
@@ -631,7 +632,8 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
             
             {loading ? (
                  <div className="flex justify-center items-center py-10">
-                    <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                    {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                    <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
                 </div>
             ) : Object.keys(groupedLicenses).length > 0 ? (
                 <div className="space-y-4">
@@ -657,7 +659,7 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
                                             <span className="flex items-center">
                                                 Total: <EditableTotal productName={productName} value={total} onSave={handleSetTotalLicenseCount} disabled={!isAdmin} />
                                             </span>
-                                            {isOverLimit && <span className="flex items-center gap-1"><Icon name="TriangleAlert" size={14} /> Excedido!</span>}
+                                            {isOverLimit && <span className="flex items-center gap-1"><Icon name="AlertTriangle" size={14} /> Excedido!</span>}
                                         </div>
                                     </div>
                                     <Icon name={isExpanded ? 'ChevronUp' : 'ChevronDown'} size={24} className="text-gray-500" />

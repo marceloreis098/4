@@ -235,7 +235,7 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
                     disabled={!baseFile || !absoluteFile || isLoading || isSaving}
                     className="bg-brand-primary text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 flex items-center justify-center gap-2 text-lg font-semibold"
                 >
-                    {isLoading ? <Icon name="LoaderCircle" className="animate-spin" /> : <Icon name="Combine" />}
+                    {isLoading ? <Icon name="Loader2" className="animate-spin" /> : <Icon name="Combine" />}
                     {isLoading ? 'Processando...' : '1. Consolidar Dados'}
                 </button>
             </div>
@@ -280,7 +280,7 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
                             disabled={isSaving}
                             className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400 flex items-center justify-center gap-2 text-lg font-semibold"
                         >
-                            {isSaving ? <Icon name="LoaderCircle" className="animate-spin" /> : <Icon name="Save" />}
+                            {isSaving ? <Icon name="Loader2" className="animate-spin" /> : <Icon name="Save" />}
                             {isSaving ? 'Salvando...' : '2. Salvar e Substituir Inventário'}
                         </button>
                     </div>

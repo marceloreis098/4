@@ -78,7 +78,8 @@ const TermoResponsabilidade: React.FC<TermoProps> = ({ equipment, user, onClose,
                 <div className="p-8 overflow-y-auto text-gray-800 dark:text-dark-text-primary">
                     {isLoading ? (
                         <div className="flex justify-center items-center h-64">
-                            <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                            {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                            <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
                         </div>
                     ) : (
                          <div dangerouslySetInnerHTML={{ __html: renderedContent.replace(/\n/g, '<br />') }} />

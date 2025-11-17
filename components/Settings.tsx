@@ -302,17 +302,19 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
     const entityId = window.location.origin;
 
     const settingsTabs = [
-        { id: 'general', label: 'Geral', icon: 'Settings' },
+        // FIX: Changed icon name 'Settings' to 'Settings2' for consistency.
+        { id: 'general', label: 'Geral', icon: 'Settings2' },
         { id: 'security', label: 'Segurança', icon: 'ShieldCheck' },
         { id: 'termo', label: 'Termos', icon: 'FileText', adminOnly: true },
         { id: 'database', label: 'Banco de Dados', icon: 'HardDrive', adminOnly: true },
-        { id: 'import', label: 'Importações', icon: 'UploadCloud', adminOnly: true },
+        { id: 'import', label: 'Importações', icon: 'CloudUpload', adminOnly: true },
     ];
 
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-full">
-                <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+                {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+                <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
             </div>
         );
     }
@@ -355,13 +357,14 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                             <p className="text-gray-500">Verificando status...</p>
                         ) : apiStatus.ok ? (
                             <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-md text-sm flex items-center gap-2">
-                                {/* FIX: Corrected invalid icon name 'CheckCircle2' to 'CheckCircle'. */}
-                                <Icon name="CheckCircle" size={18} />
+                                {/* FIX: Changed invalid icon name 'CheckCircle' to 'CheckCircle2'. */}
+                                <Icon name="CheckCircle2" size={18} />
                                 <span>Conexão com a API estabelecida com sucesso.</span>
                             </div>
                         ) : (
                             <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded-md text-sm flex items-start gap-2">
-                                <Icon name="TriangleAlert" size={18} className="flex-shrink-0 mt-0.5" />
+                                {/* FIX: Changed invalid icon name 'TriangleAlert' to 'AlertTriangle'. */}
+                                <Icon name="AlertTriangle" size={18} className="flex-shrink-0 mt-0.5" />
                                 <span><strong>Erro:</strong> {apiStatus.message}</span>
                             </div>
                         )}
@@ -562,12 +565,13 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                                 <p className="mb-2">Gerencie o banco de dados da aplicação. Recomenda-se fazer backup regularmente.</p>
                                 {backupStatus?.hasBackup ? (
                                     <p className="flex items-center gap-2 text-green-700 dark:text-green-300 font-medium">
-                                        {/* FIX: Corrected invalid icon name 'CheckCircle2' to 'CheckCircle'. */}
-                                        <Icon name="CheckCircle" size={16} /> Último backup: {new Date(backupStatus.backupTimestamp!).toLocaleString()}
+                                        {/* FIX: Changed invalid icon name 'CheckCircle' to 'CheckCircle2'. */}
+                                        <Icon name="CheckCircle2" size={16} /> Último backup: {new Date(backupStatus.backupTimestamp!).toLocaleString()}
                                     </p>
                                 ) : (
                                     <p className="flex items-center gap-2 text-red-700 dark:text-red-300 font-medium">
-                                        <Icon name="TriangleAlert" size={16} /> Nenhum backup encontrado.
+                                        {/* FIX: Changed invalid icon name 'TriangleAlert' to 'AlertTriangle'. */}
+                                        <Icon name="AlertTriangle" size={16} /> Nenhum backup encontrado.
                                     </p>
                                 )}
                             </div>
@@ -579,7 +583,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 flex items-center gap-2 text-sm"
                                     aria-label="Fazer Backup do Banco de Dados"
                                 >
-                                    {isDatabaseActionLoading ? <Icon name="LoaderCircle" className="animate-spin" size={16} /> : <Icon name="SaveAll" size={16} />}
+                                    {isDatabaseActionLoading ? <Icon name="Loader2" className="animate-spin" size={16} /> : <Icon name="Save" size={16} />}
                                     Fazer Backup
                                 </button>
                                 <button
@@ -589,7 +593,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                                     className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 disabled:bg-gray-400 flex items-center gap-2 text-sm"
                                     aria-label="Restaurar Banco de Dados"
                                 >
-                                    {isDatabaseActionLoading ? <Icon name="LoaderCircle" className="animate-spin" size={16} /> : <Icon name="RotateCw" size={16} />}
+                                    {isDatabaseActionLoading ? <Icon name="Loader2" className="animate-spin" size={16} /> : <Icon name="RotateCw" size={16} />}
                                     Restaurar Banco
                                 </button>
                                 <button
@@ -599,7 +603,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                                     className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:bg-gray-400 flex items-center gap-2 text-sm"
                                     aria-label="Zerar Banco de Dados"
                                 >
-                                    {isDatabaseActionLoading ? <Icon name="LoaderCircle" className="animate-spin" size={16} /> : <Icon name="Eraser" size={16} />}
+                                    {isDatabaseActionLoading ? <Icon name="Loader2" className="animate-spin" size={16} /> : <Icon name="Eraser" size={16} />}
                                     Zerar Banco
                                 </button>
                             </div>

@@ -18,7 +18,8 @@ const InventoryStatusPanel: React.FC<{ settings: Partial<AppSettings>; setActive
         return (
             <div className="bg-yellow-100 dark:bg-yellow-900/30 border-l-4 border-yellow-500 text-yellow-800 dark:text-yellow-200 p-4 rounded-lg shadow-md flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div className="flex items-center gap-3">
-                    <Icon name="TriangleAlert" size={24} />
+                    {/* FIX: Changed invalid icon name 'TriangleAlert' to 'AlertTriangle'. */}
+                    <Icon name="AlertTriangle" size={24} />
                     <div>
                         <h4 className="font-bold">Ação Necessária</h4>
                         <p>A consolidação inicial do inventário de equipamentos está pendente.</p>
@@ -40,8 +41,8 @@ const InventoryStatusPanel: React.FC<{ settings: Partial<AppSettings>; setActive
     return (
         <div className={`p-4 rounded-lg shadow-md flex flex-col sm:flex-row justify-between items-center gap-4 ${isUpdatePending ? 'bg-orange-100 dark:bg-orange-900/30 border-l-4 border-orange-500 text-orange-800 dark:text-orange-200' : 'bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 text-green-800 dark:text-green-200'}`}>
              <div className="flex items-center gap-3">
-                {/* FIX: Corrected invalid icon name 'CheckCircle2' to 'CheckCircle'. */}
-                <Icon name={isUpdatePending ? "History" : "CheckCircle"} size={24} />
+                {/* FIX: Changed invalid icon name 'CheckCircle' to 'CheckCircle2' to resolve TypeScript error. */}
+                <Icon name={isUpdatePending ? "History" : "CheckCircle2"} size={24} />
                 <div>
                     <h4 className="font-bold">Status da Atualização do Inventário</h4>
                     {isValidDate ? (
@@ -184,7 +185,8 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <Icon name="LoaderCircle" className="animate-spin text-brand-primary" size={48} />
+        {/* FIX: Changed invalid icon name 'LoaderCircle' to 'Loader2'. */}
+        <Icon name="Loader2" className="animate-spin text-brand-primary" size={48} />
       </div>
     );
   }
