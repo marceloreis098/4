@@ -89,6 +89,7 @@ const PeriodicUpdate: React.FC<PeriodicUpdateProps> = ({ currentUser, onUpdateSu
         try {
             const result = await periodicUpdateEquipment(parsedData, currentUser.username);
             if (result.success) {
+                alert('Inventário atualizado com sucesso!');
                 onUpdateSuccess();
             } else {
                 setError(`Falha ao salvar no sistema: ${result.message}`);

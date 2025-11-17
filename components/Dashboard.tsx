@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell
 import { getEquipment, getLicenses, getSettings } from '../services/apiService';
 import { Equipment, License, Page, User, UserRole, AppSettings } from '../types';
 import Icon from './common/Icon';
+import { icons } from 'lucide-react';
 
 const ApprovalQueue = lazy(() => import('./ApprovalQueue'));
 
@@ -62,6 +63,18 @@ const InventoryStatusPanel: React.FC<{ settings: Partial<AppSettings>; setActive
         </div>
     );
 };
+
+const StatCard: React.FC<{ icon: keyof typeof icons, title: string, value: string | number, color: string, onClick?: () => void }> = ({ icon, title, value, color, onClick }) => (
+    <div className={`bg-white dark:bg-dark-card p-6 rounded-lg shadow-md flex items-center ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}`} onClick={onClick}>
+      <div className={`p-4 rounded-full ${color}`}>
+        <Icon name={icon} size={24} className="text-white" />
+      </div>
+      <div className="ml-4">
+        <p className="text-lg font-semibold text-gray-700 dark:text-dark-text-secondary">{title}</p>
+        <p className="text-3xl font-bold text-gray-900 dark:text-dark-text-primary">{value}</p>
+      </div>
+    </div>
+);
 
 
 const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
@@ -166,18 +179,6 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
     return { policyGroupModelData: data, allModels };
   }, [equipment]);
 
-
-  const StatCard = ({ icon, title, value, color, onClick }: { icon: any, title: string, value: string | number, color: string, onClick?: () => void }) => (
-    <div className={`bg-white dark:bg-dark-card p-6 rounded-lg shadow-md flex items-center ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}`} onClick={onClick}>
-      <div className={`p-4 rounded-full ${color}`}>
-        <Icon name={icon} size={24} className="text-white" />
-      </div>
-      <div className="ml-4">
-        <p className="text-lg font-semibold text-gray-700 dark:text-dark-text-secondary">{title}</p>
-        <p className="text-3xl font-bold text-gray-900 dark:text-dark-text-primary">{value}</p>
-      </div>
-    </div>
-  );
 
   if (loading) {
     return (

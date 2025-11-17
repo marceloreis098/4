@@ -184,7 +184,7 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
                 alert('Inventário consolidado e salvo com sucesso! A aplicação será recarregada para refletir as mudanças.');
                 window.location.reload();
             } else {
-                setError(`Falha ao salvar no sistema: ${result.message}`);
+                 setError(`Falha ao salvar no sistema: ${result.message}`);
             }
         } catch (e: any) {
             setError(`Falha ao salvar no sistema: ${e.message}`);

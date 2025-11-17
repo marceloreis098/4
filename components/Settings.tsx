@@ -4,6 +4,7 @@ import Icon from './common/Icon';
 import { getSettings, saveSettings, checkApiStatus, checkDatabaseBackupStatus, backupDatabase, restoreDatabase, clearDatabase, getLicenseTotals, getLicenses } from '../services/apiService';
 import DataConsolidation from './DataConsolidation';
 import LicenseImport from './LicenseImport'; // Novo import
+import PeriodicUpdate from './PeriodicUpdate';
 
 interface SettingsProps {
     currentUser: User;
@@ -606,6 +607,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                     {activeSettingsTab === 'import' && currentUser.role === UserRole.Admin && (
                         <div className="space-y-8">
                             <DataConsolidation currentUser={currentUser} />
+                            <PeriodicUpdate currentUser={currentUser} onUpdateSuccess={fetchAllData} />
                             <LicenseImport 
                                 currentUser={currentUser} 
                                 productNames={productNames} 
