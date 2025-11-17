@@ -64,7 +64,7 @@ const InventoryStatusPanel: React.FC<{ settings: Partial<AppSettings>; setActive
     );
 };
 
-const StatCard: React.FC<{ icon: keyof typeof icons, title: string, value: string | number, color: string, onClick?: () => void }> = ({ icon, title, value, color, onClick }) => (
+const StatCard: React.FC<{ icon: keyof typeof icons; title: string; value: string | number; color: string; onClick?: () => void }> = ({ icon, title, value, color, onClick }) => (
     <div className={`bg-white dark:bg-dark-card p-6 rounded-lg shadow-md flex items-center ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}`} onClick={onClick}>
       <div className={`p-4 rounded-full ${color}`}>
         <Icon name={icon} size={24} className="text-white" />
@@ -75,7 +75,6 @@ const StatCard: React.FC<{ icon: keyof typeof icons, title: string, value: strin
       </div>
     </div>
 );
-
 
 const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
   const [equipment, setEquipment] = useState<Equipment[]>([]);
