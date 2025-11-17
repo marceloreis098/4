@@ -27,7 +27,7 @@ export const runChat = async (prompt: string, context: string): Promise<string> 
 
         const response = await chat.sendMessage({ message: prompt });
         return response.text;
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("Erro ao interagir com a API Gemini:", error);
         // Reseta o chat em caso de erro para tentar uma nova sessão na próxima vez
         chat = null; 

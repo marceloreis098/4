@@ -200,7 +200,7 @@ const LicenseFormModal: React.FC<{
             }
             onSave();
             onClose();
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to save license", error);
         } finally {
             setIsSaving(false);
@@ -362,10 +362,9 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
             } else {
                 alert(`Falha ao salvar o total de licenças: ${result.message}. Tente novamente.`);
             }
-        // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
-        // Safely handle error by checking its type before accessing the message property.
         } catch (error: unknown) {
             console.error("Failed to save license totals:", error);
+            // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
             alert("Falha ao salvar o total de licenças. Tente novamente. Detalhes: " + (error instanceof Error ? error.message : String(error)));
         }
     };
@@ -428,10 +427,9 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
                 alert(`Erro ao salvar alterações: ${result.message}`);
             }
     
-        // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
-        // Safely handle error by checking its type before accessing the message property.
         } catch (error: unknown) {
             console.error("Failed to save product name changes:", error);
+            // FIX: Argument of type 'unknown' is not assignable to parameter of type 'string'.
             alert(`Erro ao salvar alterações: ${error instanceof Error ? error.message : String(error)}`);
         } finally {
             // 5. Reload all data from server to ensure consistency
@@ -458,7 +456,7 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
             const sortedProductNames = [...currentProductNames].sort();
             setProductNames(sortedProductNames);
             localStorage.setItem('productNames', JSON.stringify(sortedProductNames));
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to load licenses", error);
         } finally {
             setLoading(false);
@@ -490,7 +488,7 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
             try {
                 await deleteLicense(licenseId, currentUser.username);
                 loadLicensesAndProducts();
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Failed to delete license", error);
             }
         }
@@ -643,8 +641,9 @@ const LicenseControl: React.FC<{ currentUser: User }> = ({ currentUser }) => {
                         const licensesForProduct = groupedLicenses[productName];
                         const total = totalLicenses[productName] ?? 0;
                         const used = licensesForProduct.length;
-                        const isExpanded = expandedProducts.includes(productName);
                         const isOverLimit = used > total;
+                        // FIX: Added definition for isExpanded.
+                        const isExpanded = expandedProducts.includes(productName);
 
                         return (
                              <div key={productName} className="bg-white dark:bg-dark-card rounded-lg shadow-md">

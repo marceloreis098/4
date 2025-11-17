@@ -25,7 +25,7 @@ const TermoResponsabilidade: React.FC<TermoProps> = ({ equipment, user, onClose,
                 } else {
                     setTemplate(templates.devolucaoTemplate);
                 }
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Failed to fetch termo templates", error);
                 setTemplate("Erro ao carregar o modelo do termo.");
             } finally {

@@ -179,12 +179,13 @@ const DataConsolidation: React.FC<{ currentUser: User }> = ({ currentUser }) => 
         setError(null);
         try {
             const dataToSave = consolidatedData.map(item => ({...item, id: undefined})) as Omit<Equipment, 'id'>[];
+            // FIX: Handle the response from importEquipment to show success/error messages.
             const result = await importEquipment(dataToSave, currentUser.username);
             if (result.success) {
                 alert('Inventário consolidado e salvo com sucesso! A aplicação será recarregada para refletir as mudanças.');
                 window.location.reload();
             } else {
-                 setError(`Falha ao salvar no sistema: ${result.message}`);
+                setError(`Falha ao salvar no sistema: ${result.message}`);
             }
         } catch (e: any) {
             setError(`Falha ao salvar no sistema: ${e.message}`);

@@ -98,7 +98,7 @@ const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
       setEquipment(equipmentData);
       setLicenses(licensesData);
       setSettings(settingsData);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to fetch dashboard data:", error);
     } finally {
       if (!isBackgroundRefresh) {

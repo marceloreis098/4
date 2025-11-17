@@ -25,8 +25,9 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ user, onSetupSuccess, o
         const data = await generate2FASecret(user.id);
         setSecret(data.secret);
         setQrCodeUrl(data.qrCodeUrl);
-      } catch (err: any) {
-        setError(err.message || 'Falha ao gerar o QR Code para 2FA.');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Falha ao gerar o QR Code para 2FA.';
+        setError(message);
       } finally {
         setIsLoading(false);
       }
@@ -45,8 +46,9 @@ const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({ user, onSetupSuccess, o
     try {
       await enable2FA(user.id, token);
       onSetupSuccess(user);
-    } catch (err: any) {
-      setError(err.message || 'Código de verificação inválido. Tente novamente.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Código de verificação inválido. Tente novamente.';
+      setError(message);
     } finally {
       setIsLoading(false);
     }

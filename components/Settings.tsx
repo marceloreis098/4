@@ -152,7 +152,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                 const allProductNames = [...new Set([...productNamesFromTotals, ...productNamesFromLicenses])].sort();
                 setProductNames(allProductNames);
             }
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to load settings data:", error);
             setBackupStatus({ hasBackup: false });
         } finally {
@@ -188,8 +188,9 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
             };
             await saveSettings(finalSettings as AppSettings, currentUser.username);
             alert("Configurações salvas com sucesso!");
-        } catch (error: any) {
-            alert(`Falha ao salvar configurações: ${(error as Error).message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Ocorreu um erro desconhecido";
+            alert(`Falha ao salvar configurações: ${message}`);
         } finally {
             setIsSaving(false);
         }
@@ -206,8 +207,9 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
             } else {
                 alert(`Falha ao fazer backup: ${result.message}`);
             }
-        } catch (error: any) {
-            alert(`Erro ao fazer backup: ${(error as Error).message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Ocorreu um erro desconhecido";
+            alert(`Erro ao fazer backup: ${message}`);
         } finally {
             setIsDatabaseActionLoading(false);
         }
@@ -224,8 +226,9 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
             } else {
                 alert(`Falha ao restaurar: ${result.message}`);
             }
-        } catch (error: any) {
-            alert(`Erro ao restaurar: ${(error as Error).message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Ocorreu um erro desconhecido";
+            alert(`Erro ao restaurar: ${message}`);
         } finally {
             setIsDatabaseActionLoading(false);
         }
@@ -247,8 +250,9 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
             } else {
                 alert(`Falha ao zerar o banco: ${result.message}`);
             }
-        } catch (error: any) {
-            alert(`Erro ao zerar o banco: ${(error as Error).message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Ocorreu um erro desconhecido";
+            alert(`Erro ao zerar o banco: ${message}`);
         } finally {
             setIsDatabaseActionLoading(false);
         }
@@ -281,7 +285,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                 setSettings(prev => ({ ...prev, ...newSettings }));
                 
                 alert('Metadados importados com sucesso! Não se esqueça de salvar as alterações.');
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Error parsing metadata XML", error);
                 alert("Falha ao analisar o arquivo XML de metadados. Verifique o formato do arquivo.");
             }

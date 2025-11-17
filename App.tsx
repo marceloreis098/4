@@ -38,7 +38,7 @@ const App: React.FC = () => {
              localStorage.removeItem('currentUser');
           }
         }
-    } catch (e) {
+    } catch (e: unknown) {
         console.error("Falha ao analisar o usuário do localStorage. Limpando.", e);
         localStorage.removeItem('currentUser');
     }
@@ -54,7 +54,7 @@ const App: React.FC = () => {
             const settings = await getSettings();
             setCompanyName(settings.companyName || 'MRR INFORMATICA');
             setIsSsoEnabled(settings.isSsoEnabled || false);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to fetch settings:", error);
         }
     }, []);

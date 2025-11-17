@@ -55,7 +55,7 @@ const UserFormModal: React.FC<{
             }
             onSave();
             onClose();
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to save user", error);
         } finally {
             setIsSaving(false);
@@ -116,7 +116,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
         try {
             const data = await getUsers();
             setUsers(data);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to load users", error);
         } finally {
             setLoading(false);
@@ -152,7 +152,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
             try {
                 await deleteUser(userId, currentUser.username);
                 loadUsers();
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Failed to delete user", error);
             }
         }
@@ -176,9 +176,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
             await disableUser2FA(userToDisable2FA.id);
             await loadUsers();
             setUserToDisable2FA(null);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to disable 2FA for user", error);
-            alert("Falha ao desativar o 2FA. Tente novamente.");
+            const message = error instanceof Error ? error.message : "Um erro desconhecido ocorreu.";
+            alert(`Falha ao desativar o 2FA. ${message}`);
         } finally {
             setIsDisabling(false);
         }

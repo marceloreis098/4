@@ -152,10 +152,11 @@ const EquipmentFormModal: React.FC<{
             }
             onSave();
             onClose();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to save equipment", error);
-            if (error.message.includes("Serial")) {
-                 setSaveError(error.message); // Display specific serial error from API
+            const message = error instanceof Error ? error.message : "Falha ao salvar equipamento. Tente novamente.";
+            if (message.includes("Serial")) {
+                 setSaveError(message); // Display specific serial error from API
             } else {
                 setSaveError("Falha ao salvar equipamento. Tente novamente.");
             }
@@ -469,7 +470,7 @@ const EquipmentHistoryModal: React.FC<{ equipmentId: number; onClose: () => void
             try {
                 const data = await getEquipmentHistory(equipmentId);
                 setHistory(data);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 setError('Falha ao carregar o histórico do equipamento.');
                 console.error(err);
             } finally {
@@ -553,7 +554,7 @@ const EquipmentList: React.FC<EquipmentListProps> = ({ currentUser, companyName 
             ]);
             setEquipment(data);
             setSettings(settingsData);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to load data", error);
         } finally {
             setLoading(false);
@@ -619,7 +620,7 @@ const EquipmentList: React.FC<EquipmentListProps> = ({ currentUser, companyName 
             loadData();
             setEntregaEquipment(null);
             setTermoData({ equipment: updatedEquipment, type: 'entrega' });
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to deliver equipment", error);
             alert("Falha ao entregar equipamento.");
         }
@@ -641,7 +642,7 @@ const EquipmentList: React.FC<EquipmentListProps> = ({ currentUser, companyName 
             loadData();
             setDevolucaoEquipment(null);
             setTermoData({ equipment: updatedEquipment, type: 'devolucao' });
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to return equipment", error);
             alert("Falha ao devolver equipamento.");
         }
@@ -660,7 +661,7 @@ const EquipmentList: React.FC<EquipmentListProps> = ({ currentUser, companyName 
             await deleteEquipment(id, currentUser.username);
             loadData();
             handleCloseDetailModal(); // Close detail after deleting
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Failed to delete equipment", error);
         }
     };
@@ -741,7 +742,7 @@ const EquipmentList: React.FC<EquipmentListProps> = ({ currentUser, companyName 
             a.click();
             document.body.removeChild(a);
 
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Erro ao exportar para XLSX:", error);
             alert("Ocorreu um erro inesperado ao tentar exportar a planilha. Verifique o console do navegador para mais detalhes.");
         }

@@ -18,7 +18,7 @@ const AuditLog: React.FC = () => {
             try {
                 const data = await getAuditLog();
                 setLogs(data);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 setError('Falha ao carregar os registros de auditoria.');
                 console.error(err);
             } finally {

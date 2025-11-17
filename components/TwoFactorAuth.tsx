@@ -26,11 +26,12 @@ const TwoFactorAuth: React.FC<TwoFactorAuthProps> = ({ user, onVerificationSucce
       // A API simulada irá validar o token
       const verifiedUser = await verify2FA(user.id, token);
       onVerificationSuccess(verifiedUser);
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof TypeError && err.message === 'Failed to fetch') {
         setError('Não foi possível conectar ao servidor. Verifique se a API está em execução.');
       } else {
-        setError(err.message || 'Código de verificação inválido.');
+        const message = err instanceof Error ? err.message : 'Código de verificação inválido.';
+        setError(message);
       }
     } finally {
       setIsLoading(false);
