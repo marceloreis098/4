@@ -162,7 +162,6 @@ const LicenseImport: React.FC<LicenseImportProps> = ({ currentUser, productNames
                         disabled={isSaving || !selectedProduct || !csvFile}
                         className="w-full bg-brand-secondary hover:bg-brand-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors disabled:bg-gray-400 flex items-center justify-center gap-2"
                     >
-                        {/* FIX: Changed icon name from "UploadCloud" to "CloudUpload" as it was renamed in lucide-react. */}
                         {isSaving ? <Icon name="LoaderCircle" className="animate-spin" /> : <Icon name="CloudUpload" />}
                         {isSaving ? 'Importando...' : 'Importar Licenças (CSV)'}
                     </button>
