@@ -1,4 +1,6 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -6,7 +8,6 @@ const bcrypt = require('bcryptjs');
 const { authenticator } = require('otplib');
 const { exec } = require('child_process');
 const fs = require('fs');
-const path = require('path');
 const zlib = require('zlib');
 const crypto = require('crypto');
 
