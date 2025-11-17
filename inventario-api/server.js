@@ -1,5 +1,7 @@
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+// Tornar o caminho do arquivo .env absoluto para evitar problemas com o CWD do PM2
+const envPath = '/var/www/Inventario/inventario-api/.env';
+require('dotenv').config({ path: envPath });
 
 const express = require('express');
 const mysql = require('mysql2');
