@@ -41,7 +41,8 @@ const AuditLog: React.FC = () => {
             case 'EQUIPMENT': return 'Computer';
             case 'LICENSE': return 'ScrollText';
             case 'USER': return 'User';
-            default: return 'FileQuestion';
+            // FIX: Changed icon name from "FileQuestion" to "FileQuestionMark" to match updated lucide-react library.
+            default: return 'FileQuestionMark';
         }
     };
 

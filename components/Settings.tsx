@@ -189,7 +189,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
             await saveSettings(finalSettings as AppSettings, currentUser.username);
             alert("Configurações salvas com sucesso!");
         } catch (error: any) {
-            alert(`Falha ao salvar configurações: ${error.message}`);
+            alert(`Falha ao salvar configurações: ${(error as Error).message}`);
         } finally {
             setIsSaving(false);
         }
@@ -207,7 +207,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                 alert(`Falha ao fazer backup: ${result.message}`);
             }
         } catch (error: any) {
-            alert(`Erro ao fazer backup: ${error.message}`);
+            alert(`Erro ao fazer backup: ${(error as Error).message}`);
         } finally {
             setIsDatabaseActionLoading(false);
         }
@@ -225,7 +225,7 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                 alert(`Falha ao restaurar: ${result.message}`);
             }
         } catch (error: any) {
-            alert(`Erro ao restaurar: ${error.message}`);
+            alert(`Erro ao restaurar: ${(error as Error).message}`);
         } finally {
             setIsDatabaseActionLoading(false);
         }
@@ -355,7 +355,8 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                             <p className="text-gray-500">Verificando status...</p>
                         ) : apiStatus.ok ? (
                             <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-md text-sm flex items-center gap-2">
-                                <Icon name="CheckCircle" size={18} />
+                                {/* FIX: Changed icon name from "CheckCircle" to "CheckCircle2" as it was renamed in lucide-react. */}
+                                <Icon name="CheckCircle2" size={18} />
                                 <span>Conexão com a API estabelecida com sucesso.</span>
                             </div>
                         ) : (
@@ -425,7 +426,8 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                                             <p className="text-sm text-gray-500 dark:text-dark-text-secondary mt-1 mb-3">Faça o upload do arquivo XML de metadados do seu provedor de identidade para preencher os campos automaticamente.</p>
                                             <input type="file" accept=".xml, text/xml" onChange={handleMetadataUpload} id="metadata-upload" className="hidden" />
                                             <label htmlFor="metadata-upload" className="cursor-pointer inline-flex items-center gap-2 bg-brand-secondary text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-                                                <Icon name="UploadCloud" size={18} /> Carregar Arquivo XML
+                                                {/* FIX: Changed icon name from "UploadCloud" to "CloudUpload" as it was renamed in lucide-react. */}
+                                                <Icon name="CloudUpload" size={18} /> Carregar Arquivo XML
                                             </label>
                                         </div>
     
@@ -561,7 +563,8 @@ const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
                                 <p className="mb-2">Gerencie o banco de dados da aplicação. Recomenda-se fazer backup regularmente.</p>
                                 {backupStatus?.hasBackup ? (
                                     <p className="flex items-center gap-2 text-green-700 dark:text-green-300 font-medium">
-                                        <Icon name="CheckCircle" size={16} /> Último backup: {new Date(backupStatus.backupTimestamp!).toLocaleString()}
+                                        {/* FIX: Changed icon name from "CheckCircle" to "CheckCircle2" as it was renamed in lucide-react. */}
+                                        <Icon name="CheckCircle2" size={16} /> Último backup: {new Date(backupStatus.backupTimestamp!).toLocaleString()}
                                     </p>
                                 ) : (
                                     <p className="flex items-center gap-2 text-red-700 dark:text-red-300 font-medium">

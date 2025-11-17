@@ -7,11 +7,6 @@ import { icons } from 'lucide-react';
 
 const ApprovalQueue = lazy(() => import('./ApprovalQueue'));
 
-interface DashboardProps {
-    setActivePage: (page: Page) => void;
-    currentUser: User;
-}
-
 const PIE_COLORS = ['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6', '#1abc9c', '#d35400', '#34495e', '#e67e22'];
 
 const InventoryStatusPanel: React.FC<{ settings: Partial<AppSettings>; setActivePage: (page: Page) => void; }> = ({ settings, setActivePage }) => {
@@ -45,7 +40,8 @@ const InventoryStatusPanel: React.FC<{ settings: Partial<AppSettings>; setActive
     return (
         <div className={`p-4 rounded-lg shadow-md flex flex-col sm:flex-row justify-between items-center gap-4 ${isUpdatePending ? 'bg-orange-100 dark:bg-orange-900/30 border-l-4 border-orange-500 text-orange-800 dark:text-orange-200' : 'bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 text-green-800 dark:text-green-200'}`}>
              <div className="flex items-center gap-3">
-                <Icon name={isUpdatePending ? "History" : "CheckCircle"} size={24} />
+                {/* FIX: Changed icon name from "CheckCircle" to "CheckCircle2" as it was renamed in lucide-react. */}
+                <Icon name={isUpdatePending ? "History" : "CheckCircle2"} size={24} />
                 <div>
                     <h4 className="font-bold">Status da Atualização do Inventário</h4>
                     {isValidDate ? (
@@ -75,6 +71,12 @@ const StatCard: React.FC<{ icon: keyof typeof icons; title: string; value: strin
       </div>
     </div>
 );
+
+// FIX: Added missing interface for DashboardProps to resolve 'Cannot find name' error.
+interface DashboardProps {
+    setActivePage: (page: Page) => void;
+    currentUser: User;
+}
 
 const Dashboard: React.FC<DashboardProps> = ({setActivePage, currentUser}) => {
   const [equipment, setEquipment] = useState<Equipment[]>([]);
