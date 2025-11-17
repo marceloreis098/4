@@ -75,7 +75,6 @@ export interface License {
     observacoes?: string;
     approval_status?: 'pending_approval' | 'approved' | 'rejected';
     rejection_reason?: string;
-    // FIX: Property 'created_by_id' does not exist on type 'License'.
     created_by_id?: number;
 }
 
@@ -117,7 +116,6 @@ export interface AppSettings {
     lastAbsoluteUpdateTimestamp?: string;
 }
 
-// FIX: Add ChatMessage interface for the AI Assistant component
 export interface ChatMessage {
     role: 'user' | 'model';
     parts: { text: string }[];
