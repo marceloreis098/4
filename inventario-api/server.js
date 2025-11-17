@@ -15,10 +15,6 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Habilita o Express a confiar nos cabeçalhos de proxy (X-Forwarded-*) enviados pelo Nginx.
-// Essencial para o req.protocol e req.hostname funcionarem corretamente com HTTPS.
-app.set('trust proxy', 1);
-
 const PORT = process.env.API_PORT || 3001;
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10');
 const DB_HOST = process.env.DB_HOST;

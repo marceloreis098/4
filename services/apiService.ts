@@ -12,13 +12,8 @@ const handleResponse = async (response: Response) => {
 };
 
 const getApiBaseUrl = () => {
-    // Para ambientes de desenvolvimento (rodando na porta 3000), aponta para a API na porta 3001.
-    // Isso cobre localhost:3000 e outros hosts de desenvolvimento como inventariopro.usereserva.com:3000
-    if (window.location.port === '3000') {
-        return `${window.location.protocol}//${window.location.hostname}:3001/api`;
-    }
-    // Para produção, usa um caminho relativo para que o proxy reverso (Nginx) possa lidar com o roteamento.
-    return '/api';
+    // Constrói a URL base para a API, que sempre roda na porta 3001 no mesmo host que o frontend.
+    return `${window.location.protocol}//${window.location.hostname}:3001/api`;
 };
 
 
@@ -40,7 +35,7 @@ export const checkApiStatus = async (): Promise<{ ok: boolean, message?: string 
         await response.json();
         return { ok: true };
     } catch (error: any) {
-        return { ok: false, message: 'Falha ao conectar com a API. Verifique se o servidor backend está em execução e se o proxy reverso (Nginx) está configurado corretamente para o caminho /api.' };
+        return { ok: false, message: 'Falha ao conectar com a API. Verifique se o servidor backend está em execução e se o firewall (UFW) permite acesso à porta 3001.' };
     }
 };
 
